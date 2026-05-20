@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>School Object Galaxy</title>
+<style>
+:root{
+  --blue0:#071a4a;
+  --blue1:#123c9c;
+  --blue2:#32a7ff;
+  --yellow:#ffe66d;
+  --white:#f8fcff;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255,255,255,.22), transparent 22%),
+    radial-gradient(circle at 88% 12%, rgba(255,230,109,.20), transparent 24%),
+    linear-gradient(180deg,var(--blue2),var(--blue1),var(--blue0));
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.95) 1px,transparent 1.7px),
+    radial-gradient(circle,rgba(255,230,109,.85) 1px,transparent 1.8px),
+    radial-gradient(circle,rgba(126,230,255,.7) 1px,transparent 1.8px);
+  background-size:130px 130px,210px 210px,170px 170px;
+  opacity:.42;
+  animation:stars 90s linear infinite;
+}
+@keyframes stars{from{transform:translateY(0)}to{transform:translateY(250px)}}
+.app{position:relative;z-index:2}
+.wrap{max-width:1220px;margin:0 auto;padding:20px}
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.glass{
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.055));
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:30px;
+  box-shadow:0 24px 60px rgba(0,0,0,.34);
+  backdrop-filter:blur(14px);
+}
+.start{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:24px;
+  padding:30px;
+  width:min(1200px,96vw);
+}
+.badge{
+  display:inline-block;
+  padding:10px 16px;
+  border-radius:999px;
+  background:rgba(255,230,109,.16);
+  border:1px solid rgba(255,230,109,.25);
+  color:#fff5b7;
+  font-weight:900;
+}
+.title{
+  font-size:clamp(2.5rem,6vw,5.5rem);
+  line-height:.9;
+  font-weight:900;
+  margin:18px 0 12px;
+  text-shadow:0 0 24px rgba(255,255,255,.28);
+}
+.subtitle{
+  font-size:1.12rem;
+  line-height:1.8;
+  color:rgba(255,255,255,.9);
+}
+.feature{
+  margin-top:13px;
+  padding:14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.07);
+  font-weight:800;
+}
+.panel{padding:24px}
+input{
+  width:100%;
+  padding:18px 20px;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  font-size:1.08rem;
+  font-weight:900;
+  margin-top:10px;
+  color:#12325f;
+}
+.buttons,.controls{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:18px;
+}
+button{
+  border:none;
+  cursor:pointer;
+  border-radius:18px;
+  padding:15px 22px;
+  font-size:1rem;
+  font-weight:900;
+  transition:.18s;
+}
+button:hover{transform:translateY(-2px) scale(1.01)}
+.play{background:linear-gradient(180deg,#fff9bd,#ffe66d);color:#302300;flex:1}
+.review{background:linear-gradient(180deg,#ffffff,#dff4ff);color:#10386b}
+.control{background:linear-gradient(180deg,#ffffff,#dff4ff);color:#10386b}
+.check{background:linear-gradient(180deg,#fff9bd,#ffe66d);color:#302300}
+.danger{background:linear-gradient(180deg,#ff9d78,#ff624c);color:white}
+.orb{
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.orb::before,.orb::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.18);
+  animation:pulse 3s infinite;
+}
+.orb::before{width:185px;height:185px}
+.orb::after{width:120px;height:120px;animation-delay:1s}
+.core{
+  width:88px;height:88px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;
+  background:linear-gradient(180deg,#fff9bd,#ffe66d);
+  box-shadow:0 0 34px rgba(255,230,109,.32);
+}
+@keyframes pulse{0%,100%{transform:scale(.92);opacity:.4}50%{transform:scale(1.06);opacity:1}}
+.game{padding:14px}
+.hud{display:grid;grid-template-columns:1.35fr .85fr;gap:14px;margin-bottom:14px}
+.card{padding:20px}
+.stats{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.label{font-size:.84rem;opacity:.72;font-weight:900}
+.value{font-size:2rem;font-weight:900}
+.arena{padding:24px;overflow:hidden}
+.prompt{text-align:center;font-size:1.2rem;font-weight:900;margin-bottom:8px}
+.meaning{text-align:center;min-height:30px;color:var(--yellow);font-weight:900}
+.slots{
+  display:flex;justify-content:center;flex-wrap:wrap;
+  gap:10px;margin:18px 0 30px;min-height:90px;
+}
+.slot{
+  width:64px;height:64px;
+  border-radius:18px;
+  border:2px dashed rgba(255,255,255,.3);
+  background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;font-weight:900;
+  cursor:pointer;
+}
+.slot.filled{
+  background:linear-gradient(180deg,#fff9bd,#ffe66d);
+  color:#302300;
+  border-style:solid;
+}
+.letters{
+  display:flex;justify-content:center;flex-wrap:wrap;
+  gap:18px;min-height:220px;align-items:center;
+}
+.letter{
+  width:84px;height:84px;border-radius:50%;
+  border:4px solid rgba(255,255,255,.76);
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,.46),transparent 18%),
+    linear-gradient(180deg,#ffffff,#83d9ff);
+  color:#12325f;
+  font-size:2.1rem;
+  font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:0 18px 34px rgba(0,0,0,.25);
+  animation:float 5s ease-in-out infinite;
+}
+.letter:nth-child(2n){animation-duration:4.2s}
+.letter:nth-child(3n){animation-duration:5.6s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.popup{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.55);z-index:99;backdrop-filter:blur(5px);
+}
+.popup.show{display:flex}
+.popup-box{
+  min-width:min(90vw,620px);
+  border-radius:32px;
+  padding:38px 28px;
+  background:linear-gradient(180deg,#fff9bd,#ffe66d);
+  color:#302300;
+  text-align:center;
+  box-shadow:0 28px 70px rgba(0,0,0,.45);
+}
+.popword{font-size:3rem;font-weight:900;margin-top:6px}
+.popsent{font-size:1.45rem;font-weight:900;margin-top:12px}
+.review-shell,.summary{
+  width:min(1200px,96vw);
+  padding:30px;
+}
+.review-grid,.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-top:20px;
+  max-height:58vh;
+  overflow:auto;
+}
+.review-card,.summary-card{
+  padding:16px;
+  border-radius:22px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  text-align:center;
+}
+.rword,.sword{font-size:1.3rem;font-weight:900;margin-top:8px}
+.thai{color:var(--yellow);font-weight:900;margin-top:8px}
+.sent{font-weight:800;margin-top:8px;font-size:.94rem;color:rgba(255,255,255,.88)}
+.summary-hero{
+  text-align:center;
+  padding:28px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(255,230,109,.18),transparent 25%),
+    linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));
+  border:1px solid rgba(255,255,255,.16);
+}
+.trophy{font-size:4.5rem;animation:bounce 1.4s infinite}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.score-big{
+  display:inline-block;
+  margin-top:12px;
+  padding:14px 28px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#fff9bd,#ffe66d);
+  color:#302300;
+  font-size:clamp(1.6rem,4vw,2.6rem);
+  font-weight:900;
+}
+@media(max-width:900px){
+  .start,.hud{grid-template-columns:1fr}
+  .slot{width:56px;height:56px;font-size:1.75rem}
+  .letter{width:72px;height:72px;font-size:1.8rem}
+  .popword{font-size:2.3rem}.popsent{font-size:1.12rem}
+}
+@media(max-width:700px){
+  .controls,.buttons{display:grid;grid-template-columns:1fr}
+  .controls button,.buttons button{width:100%}
+  .arena{padding:18px 14px}
+  .letters{gap:12px}
+}
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <div id="popEmoji" style="font-size:4rem"></div>
+    <div id="popWord" class="popword"></div>
+    <div id="popPraise" class="popsent"></div>
+    <div style="font-size:2rem;margin-top:12px">👏 ⭐ 👍 ✨</div>
+  </div>
+</div>
+
+<script>
+const WORDS=[
+{word:"pencil",thai:"ดินสอ",emoji:"✏️",sentence:"This is a pencil."},
+{word:"pen",thai:"ปากกา",emoji:"🖊️",sentence:"This is a pen."},
+{word:"eraser",thai:"ยางลบ",emoji:"🧽",sentence:"I use an eraser."},
+{word:"ruler",thai:"ไม้บรรทัด",emoji:"📏",sentence:"The ruler is long."},
+{word:"book",thai:"หนังสือ",emoji:"📚",sentence:"I read a book."},
+{word:"notebook",thai:"สมุด",emoji:"📓",sentence:"This is my notebook."},
+{word:"bag",thai:"กระเป๋า",emoji:"👜",sentence:"The bag is blue."},
+{word:"scissors",thai:"กรรไกร",emoji:"✂️",sentence:"These are scissors."},
+{word:"glue",thai:"กาว",emoji:"🧴",sentence:"I use glue."},
+{word:"crayon",thai:"สีเทียน",emoji:"🖍️",sentence:"The crayon is red."},
+{word:"marker",thai:"ปากกาเมจิก",emoji:"🖊️",sentence:"This is a marker."},
+{word:"desk",thai:"โต๊ะเรียน",emoji:"🪑",sentence:"The desk is big."},
+{word:"chair",thai:"เก้าอี้",emoji:"🪑",sentence:"Sit on the chair."},
+{word:"paper",thai:"กระดาษ",emoji:"📄",sentence:"Write on the paper."},
+{word:"calculator",thai:"เครื่องคิดเลข",emoji:"🧮",sentence:"I use a calculator."},
+{word:"backpack",thai:"กระเป๋าเป้",emoji:"🎒",sentence:"This is my backpack."},
+{word:"sharpener",thai:"กบเหลาดินสอ",emoji:"✏️",sentence:"The sharpener is small."},
+{word:"blackboard",thai:"กระดานดำ",emoji:"🟩",sentence:"Look at the blackboard."},
+{word:"computer",thai:"คอมพิวเตอร์",emoji:"💻",sentence:"I use a computer."},
+{word:"dictionary",thai:"พจนานุกรม",emoji:"📘",sentence:"This is a dictionary."},
+{word:"map",thai:"แผนที่",emoji:"🗺️",sentence:"Look at the map."},
+{word:"folder",thai:"แฟ้ม",emoji:"📁",sentence:"Put it in the folder."},
+{word:"stapler",thai:"ที่เย็บกระดาษ",emoji:"📎",sentence:"This is a stapler."},
+{word:"highlighter",thai:"ปากกาไฮไลต์",emoji:"🖍️",sentence:"The highlighter is yellow."},
+{word:"projector",thai:"โปรเจกเตอร์",emoji:"📽️",sentence:"Turn on the projector."}
+];
+
+const state={screen:"start",name:"",index:0,score:0,slots:[],pool:[],time:25,timer:null,hint:false,history:[]};
+let audioCtx=null;
+function getCtx(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!audioCtx)audioCtx=new AC();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx;}
+function sound(type="click"){
+ const ctx=getCtx();if(!ctx)return;const now=ctx.currentTime;
+ if(type==="click"){const o=ctx.createOscillator(),g=ctx.createGain();o.type="triangle";o.frequency.setValueAtTime(520,now);o.frequency.exponentialRampToValueAtTime(760,now+.08);g.gain.setValueAtTime(.001,now);g.gain.exponentialRampToValueAtTime(.12,now+.01);g.gain.exponentialRampToValueAtTime(.001,now+.12);o.connect(g);g.connect(ctx.destination);o.start(now);o.stop(now+.13);}
+ if(type==="correct"){[523,659,784,1046].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.setValueAtTime(f,now+i*.07);g.gain.setValueAtTime(.001,now+i*.07);g.gain.exponentialRampToValueAtTime(.16,now+i*.07+.02);g.gain.exponentialRampToValueAtTime(.001,now+i*.07+.2);o.connect(g);g.connect(ctx.destination);o.start(now+i*.07);o.stop(now+i*.07+.22);});}
+ if(type==="wrong"){const o=ctx.createOscillator(),g=ctx.createGain();o.type="sawtooth";o.frequency.setValueAtTime(220,now);o.frequency.exponentialRampToValueAtTime(90,now+.3);g.gain.setValueAtTime(.001,now);g.gain.exponentialRampToValueAtTime(.14,now+.02);g.gain.exponentialRampToValueAtTime(.001,now+.35);o.connect(g);g.connect(ctx.destination);o.start(now);o.stop(now+.35);}
+}
+function speak(text,rate=.82){if(!("speechSynthesis" in window))return;const msg=new SpeechSynthesisUtterance(text);msg.lang="en-US";msg.rate=rate;window.speechSynthesis.cancel();window.speechSynthesis.speak(msg);}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function setup(){
+ const current=WORDS[state.index];
+ state.pool=shuffle(current.word.split("").map((l,i)=>({id:i+"-"+Math.random(),l})));
+ state.slots=new Array(current.word.length).fill(null);
+ state.time=25;state.hint=false;
+ clearInterval(state.timer);
+ state.timer=setInterval(()=>{state.time--;if(state.time<=0){sound("wrong");next();}render();},1000);
+}
+function startGame(){
+ const input=document.getElementById("playerName");if(input)state.name=input.value.trim();if(!state.name)state.name="Guest";
+ state.index=0;state.score=0;state.history=[];state.screen="game";setup();render();
+}
+function pick(id){sound("click");const item=state.pool.find(p=>p.id==id);const idx=state.slots.findIndex(s=>s===null);if(!item||idx===-1)return;state.slots[idx]=item.l;state.pool=state.pool.filter(p=>p.id!=id);render();}
+function removeSlot(i){if(!state.slots[i])return;sound("click");state.pool.push({id:Math.random(),l:state.slots[i]});state.slots[i]=null;state.pool=shuffle(state.pool);render();}
+function clearSlots(){sound("click");state.slots.forEach(s=>{if(s)state.pool.push({id:Math.random(),l:s});});state.slots=state.slots.map(()=>null);state.pool=shuffle(state.pool);render();}
+function showHint(){sound("click");state.hint=true;render();}
+const PRAISES=[
+"ว้าววว เก่งมาก! 👏",
+"เลิศมากจ้า 👍",
+"สุดจริงนะ! 🌟",
+"โอ้..เลิศ! 👏✨",
+"เยี่ยมไปเลย! 🥳",
+"ฉลาดสุด ๆ! 👍",
+"ทำได้ดีมาก! 👏",
+"ปังมากจ้า! ⭐",
+"เก่งขึ้นอีกแล้ว! 💖",
+"Excellent! 👏"
+];
+
+function popup(item){
+ const praise=PRAISES[Math.floor(Math.random()*PRAISES.length)];
+ const emojiPool=["👏","👍","🙌","🥳","🌟","💖"];
+ const bigEmoji=emojiPool[Math.floor(Math.random()*emojiPool.length)];
+ document.getElementById("popEmoji").innerHTML=bigEmoji;
+ document.getElementById("popWord").innerHTML=item.word.toUpperCase();
+ document.getElementById("popPraise").innerHTML=praise;
+ document.getElementById("popup").classList.add("show");
+ setTimeout(()=>document.getElementById("popup").classList.remove("show"),1800);
+}
+function check(){
+ if(state.slots.includes(null))return;
+ const answer=state.slots.join("");const current=WORDS[state.index];
+ if(answer===current.word){sound("correct");popup(current);state.score+=state.hint?2:3;state.history.push(current);setTimeout(()=>next(),1900);}
+ else{sound("wrong");}
+}
+function next(){clearInterval(state.timer);state.index++;if(state.index>=WORDS.length){state.screen="summary";render();}else{setup();render();}}
+function review(){clearInterval(state.timer);state.screen="review";render();}
+function home(){clearInterval(state.timer);state.screen="start";render();}
+
+function render(){
+ const app=document.getElementById("app");
+ if(state.screen==="start"){
+  app.innerHTML=`<div class="screen"><div class="start glass"><div><div class="badge">🎒 SCHOOL OBJECT GALAXY</div><div class="title">Smart School<br>Galaxy ✨</div><div class="subtitle">เกมเรียงคำศัพท์ของใช้ในโรงเรียน 25 คำ 📚<br>ตอบถูกแล้วโชว์ประโยคสั้นพร้อมเสียงอ่าน</div><div class="feature">✏️ คำศัพท์ใช้จริงในห้องเรียน</div><div class="feature">🔊 มีเสียงกด เสียงถูก เสียงผิด</div><div class="feature">👏 ตอบถูกแล้วสุ่มคำชม น่ารัก ผ่อนคลาย</div><div class="feature">📱 ปุ่มมือถือไม่เบียด กดง่าย</div></div><div class="panel glass"><div style="font-weight:900">PLAYER NAME</div><input id="playerName" placeholder="Type your name" value="${state.name}"><div class="buttons"><button class="review" onclick="sound('click');review()">📘 REVIEW</button><button class="play" onclick="startGame()">START MISSION</button></div><div class="orb"><div class="core">🎒</div></div></div></div></div>`;
+ }
+ if(state.screen==="review"){
+  app.innerHTML=`<div class="screen"><div class="review-shell glass"><h1 style="text-align:center;font-size:clamp(2.2rem,5vw,4.2rem);margin:0">SCHOOL REVIEW 📚</h1><div class="review-grid">${WORDS.map(w=>`<div class="review-card"><div style="font-size:2rem">${w.emoji}</div><div class="rword">${w.word}</div><div class="thai">${w.thai}</div><div class="sent">${w.sentence}</div><div class="buttons"><button class="control" onclick="sound('click');speak('${w.word}')">🔊 Word</button><button class="control" onclick="sound('click');speak('${w.sentence}')">🔊 Sentence</button></div></div>`).join("")}</div><div class="buttons"><button class="control" onclick="home()">🏠 HOME</button><button class="play" onclick="startGame()">🎮 PLAY</button></div></div></div>`;
+ }
+ if(state.screen==="game"){
+  const current=WORDS[state.index];
+  app.innerHTML=`<div class="game"><div class="wrap"><div class="hud"><div class="card glass"><div class="stats"><div><div class="label">PLAYER</div><div class="value">${state.name}</div></div><div><div class="label">WORD</div><div class="value">${state.index+1}/${WORDS.length}</div></div><div><div class="label">SCORE</div><div class="value" style="color:var(--yellow)">${state.score}</div></div><div><div class="label">TIME</div><div class="value">${state.time}</div></div></div></div><div class="card glass"><div class="prompt">Arrange the school object word ✨</div><div class="meaning">${state.hint?current.emoji+" "+current.thai:""}</div></div></div><div class="arena glass"><div class="slots">${state.slots.map((s,i)=>`<div class="slot ${s?'filled':''}" onclick="removeSlot(${i})">${s?s:''}</div>`).join("")}</div><div class="letters">${state.pool.map(p=>`<div class="letter" onclick="pick('${p.id}')">${p.l}</div>`).join("")}</div><div class="controls"><button class="control" onclick="showHint()">💡 Meaning</button><button class="danger" onclick="clearSlots()">🗑️ Clear</button><button class="check" onclick="check()">✅ Check</button></div></div></div></div>`;
+ }
+ if(state.screen==="summary"){
+  const max=WORDS.length*3;const percent=Math.round((state.score/max)*100);
+  app.innerHTML=`<div class="screen"><div class="summary glass"><div class="summary-hero"><div class="trophy">${percent>=80?"🏆":"🌟"}</div><div style="font-size:clamp(2.2rem,6vw,5rem);font-weight:900">SCHOOL MASTER!</div><div class="score-big">${state.score} / ${max} POINTS</div><div style="margin-top:12px;font-weight:900;color:rgba(255,255,255,.88)">${state.name} • ${percent}% • Great Job! 📚✨</div></div><div class="summary-grid">${state.history.map(h=>`<div class="summary-card"><div style="font-size:2rem">${h.emoji}</div><div class="sword">${h.word}</div><div class="thai">${h.thai}</div><div class="sent">${h.sentence}</div></div>`).join("")}</div><div class="buttons"><button class="review" onclick="review()">📘 REVIEW AGAIN</button><button class="play" onclick="home()">🏠 PLAY AGAIN</button></div></div></div>`;
+ }
+}
+render();
+</script>
+</body>
+</html>
